@@ -18,6 +18,11 @@ class Table extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)->withPivot('quantity');
+    }
+
+    public function orders()
+    {
+        return $this->HasMany(Order::class);
     }
 }

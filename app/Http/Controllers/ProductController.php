@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        return view('products.index', ['products' => Product::all()]);
     }
 
     /**
@@ -29,7 +30,13 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        Product::create([
+            'name' => $request->product,
+            'price' => $request->price,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->back();
     }
 
     /**
@@ -45,15 +52,21 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return view('products.edit', ['product' => $product]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $product->update([
+            'name' => $request->product,
+            'price' => $request->price,
+            'status' => $request->status
+        ]);
+
+        return redirect()->back()->with('success', 'محصول ویرایش شد');
     }
 
     /**
@@ -61,6 +74,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return redirect()->route('products.index');
     }
 }

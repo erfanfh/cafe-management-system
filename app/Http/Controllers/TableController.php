@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTableRequest;
+use App\Http\Requests\UpdateTableRequest;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Table;
 use http\Header\Parser;
@@ -19,7 +21,7 @@ class TableController extends Controller
      */
     public function index()
     {
-        //
+        return view('tables.index', ['tables' => Table::all()]);
     }
 
     /**
@@ -48,6 +50,7 @@ class TableController extends Controller
     public function show(Table $table , int $key): View|Factory|Application
     {
         $products = Product::all();
+
         return view('tables.show', ['table' => $table, 'key' => $key, 'products' => $products]);
     }
 
@@ -56,19 +59,28 @@ class TableController extends Controller
      */
     public function edit(Table $table)
     {
-        //
+        return view('tables.edit', ['table' => $table]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Table $table): RedirectResponse
+    public function update(UpdateTableRequest $request, Table $table): RedirectResponse
     {
-        $table->update([
-            'status' => $request->status,
-        ]);
+        if (is_null($request->tableName))
+        {
+            $table->update([
+                'status' => $request->status,
+            ]);
+        } else {
+            $table->update([
+                'name' => $request->tableName,
+                'status' => $request->status,
+            ]);
+        }
 
-        return redirect()->back();
+
+        return redirect()->back()->with('success', 'میز موردنظر ویرایش شد');
     }
 
     /**
@@ -76,6 +88,8 @@ class TableController extends Controller
      */
     public function destroy(Table $table)
     {
-        //
+        $table->delete();
+
+        return redirect()->route('tables.index');
     }
 }

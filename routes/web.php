@@ -12,6 +12,8 @@ Route::resource('tables', TableController::class)->except('show');
 
 Route::get('tables/{table}/{key}', [TableController::class, 'show'])->name('tables.show');
 
-Route::resource('orders', OrderController::class)->except('store');
+Route::resource('orders', OrderController::class)->except(['store']);
 
 Route::post('orders/{table}/', [OrderController::class, 'store'])->name('orders.store');
+
+Route::resource('products', ProductController::class);

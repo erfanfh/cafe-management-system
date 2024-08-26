@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Models\Order;
+use App\Models\Product;
 use App\Models\Table;
 use Illuminate\Http\Request;
 
@@ -29,7 +31,16 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request, Table $table)
     {
-        //
+        if (empty($table->orders->where('product_id', $request->name)->all()))
+        {
+            $table->products()->attach($request->name);
+        } else {
+            $order = $table->orders->where('product_id', $request->name)->first();
+            $order->quantity++;
+            $order->save();
+        }
+
+        return redirect()->back()->with('success', 'محصول موردنظر اضافه شد');
     }
 
     /**
@@ -53,7 +64,14 @@ class OrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $order = Order::find($id);
+
+        $order->update([
+            $order->quantity++,
+            $order->save()
+        ]);
+
+        return redirect()->back();
     }
 
     /**
@@ -61,6 +79,18 @@ class OrderController extends Controller
      */
     public function destroy(string $id)
     {
-        dd("sd");
+        $order = Order::find($id);
+
+        if ($order->quantity > 1)
+        {
+            $order->update([
+                $order->quantity--,
+                $order->save()
+            ]);
+        } else {
+            $order->delete();
+        }
+
+        return redirect()->back();
     }
 }
