@@ -7,23 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Table extends Model
+class Bill extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'status',
+        'quantity',
+        'price',
     ];
 
-
-    public function products(): BelongsToMany
+    public function orders(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'orders')->withPivot('quantity');
-    }
-
-    public function orders(): HasMany
-    {
-        return $this->HasMany(Order::class);
+        return $this->BelongsToMany(Order::class);
     }
 }

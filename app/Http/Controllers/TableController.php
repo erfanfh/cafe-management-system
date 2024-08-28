@@ -79,7 +79,6 @@ class TableController extends Controller
             ]);
         }
 
-
         return redirect()->back()->with('success', 'میز موردنظر ویرایش شد');
     }
 

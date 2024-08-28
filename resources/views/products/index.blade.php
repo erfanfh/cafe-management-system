@@ -1,6 +1,7 @@
 @extends('layouts.master')
 @section('title', 'مدیریت محصولات')
 @section('content')
+    <div class="display-6">محصولات</div>
     <div class="table-responsive small">
         <table class="table table-striped table-sm">
             <thead>

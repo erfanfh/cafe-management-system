@@ -88,7 +88,10 @@
                     <span class="fw-bold fs-large">{{ number_format($totalPrice) }}</span>
                     تومان
                 </div>
-                <button class="btn btn-primary">پرداخت</button>
+                <form action="{{ route('bills.store', [$table->id, $totalPrice, $totalQuantity]) }}" method="post">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">پرداخت</button>
+                </form>
             </div>
         </div>
     @endif
