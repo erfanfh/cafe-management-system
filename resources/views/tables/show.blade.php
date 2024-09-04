@@ -1,10 +1,10 @@
 @extends('layouts.master')
 @section('title', $table->name . " ($key) " )
 @section('content')
-    <div class="display-6"> میز {{$table->name . "(" . $key .")"}}</div>
+    <div class="display-6 mb-3"> میز {{$table->name . "(" . $key .")"}}</div>
     @if(!$table->status)
-        <div class="d-flex">
-            <div class="h3">افزودن سفارش</div>
+        <div class="d-flex gap-3 my-5">
+            <div class="h3 ">افزودن سفارش</div>
             <form id="addProduct" action="{{ route('orders.store', $table) }}" method="post">
                 @csrf
                 <div class="mb-3 d-flex gap-3">
@@ -25,7 +25,7 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    <div class="h3">سفارشات</div>
+    <div class="h3 mb-5">سفارشات</div>
     <div class="table-responsive small">
         <table class="table table-striped table-sm">
             <thead>
@@ -77,7 +77,7 @@
     @if(!$table->status)
         <div>
             <div
-                class="h-100 p-5 border border-dark rounded-3 d-flex flex-column justify-content-center align-items-end gap-3">
+                class="h-100 p-5 border border-dark rounded-3 d-flex flex-column justify-content-center align-items-start gap-3">
                 <h1>صورتحساب</h1>
                 <div>
                     تعداد سفارشات :
