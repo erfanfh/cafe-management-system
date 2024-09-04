@@ -20,7 +20,7 @@ class Product extends Model
 
     public function tables(): BelongsToMany
     {
-        return $this->belongsToMany(Table::class)->withPivot('quantity');
+        return $this->belongsToMany(Table::class, 'orders')->withPivot('quantity');
     }
 
     public function orders(): HasMany

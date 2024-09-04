@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -17,3 +18,7 @@ Route::resource('orders', OrderController::class)->except(['store']);
 Route::post('orders/{table}/', [OrderController::class, 'store'])->name('orders.store');
 
 Route::resource('products', ProductController::class);
+
+Route::post('bills/{table}/{quantity}/{price}', [BillController::class, 'store'])->name('bills.store');
+
+Route::get('bills', [BillController::class, 'index'])->name('bills.index');

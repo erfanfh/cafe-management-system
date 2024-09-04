@@ -21,6 +21,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="{{ route('tables.index') }}">میزها</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{{ route('bills.index') }}">سفارشات</a>
+                </li>
             </ul>
         </div>
     </div>
