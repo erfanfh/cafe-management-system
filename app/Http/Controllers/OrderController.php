@@ -2,37 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Orders\DeleteOrder;
+use App\Actions\Orders\UpdateOrder;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\Table;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class OrderController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderRequest $request, Table $table)
+    public function store(StoreOrderRequest $request, Table $table): RedirectResponse
     {
-        if (empty($table->orders->where('product_id', $request->name)->all()))
-        {
+        if (empty($table->orders->where('product_id', $request->name)->all())) {
             $table->products()->attach($request->name);
         } else {
             $order = $table->orders->where('product_id', $request->name)->first();
@@ -44,32 +28,13 @@ class OrderController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(string $id, UpdateOrder $updateOrder): RedirectResponse
     {
         $order = Order::find($id);
 
-        $order->update([
-            $order->quantity++,
-            $order->save()
-        ]);
+        $updateOrder->handle($order);
 
         return redirect()->back();
     }
@@ -77,16 +42,12 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, DeleteOrder $deleteOrder): RedirectResponse
     {
         $order = Order::find($id);
 
-        if ($order->quantity > 1)
-        {
-            $order->update([
-                $order->quantity--,
-                $order->save()
-            ]);
+        if ($order->quantity > 1) {
+            $deleteOrder->handle($order);
         } else {
             $order->delete();
         }

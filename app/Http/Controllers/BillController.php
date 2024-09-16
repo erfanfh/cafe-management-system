@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Bills\CreateBill;
 use App\Models\Bill;
-use App\Models\Order;
 use App\Models\Table;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class BillController extends Controller
@@ -13,7 +16,7 @@ class BillController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Factory|Application
     {
         $bills = QueryBuilder::for(Bill::class)
             ->allowedSorts(['price', 'quantity', 'created_at'])
@@ -24,57 +27,12 @@ class BillController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Table $table, string $price, string $quantity)
+    public function store(Table $table, string $price, string $quantity, CreateBill $createBill): RedirectResponse
     {
-        Bill::create([
-            'quantity' => $quantity,
-            'price' => $price,
-        ]);
-
-        $table->products()->detach();
+        $createBill->handle($quantity, $price, $table);
 
         return redirect()->route('home');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Bill $bill)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Bill $bill)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Bill $bill)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Bill $bill)
-    {
-        //
     }
 }

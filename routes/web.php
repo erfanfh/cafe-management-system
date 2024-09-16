@@ -1,24 +1,14 @@
 <?php
 
-use App\Http\Controllers\BillController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 
-Route::resource('tables', TableController::class)->except('show');
+require __DIR__ . '/Tables/table.php';
 
-Route::get('tables/{table}/{key}', [TableController::class, 'show'])->name('tables.show');
+require __DIR__ . '/Orders/order.php';
 
-Route::resource('orders', OrderController::class)->except(['store']);
+require __DIR__ . '/Products/product.php';
 
-Route::post('orders/{table}/', [OrderController::class, 'store'])->name('orders.store');
-
-Route::resource('products', ProductController::class);
-
-Route::post('bills/{table}/{quantity}/{price}', [BillController::class, 'store'])->name('bills.store');
-
-Route::get('bills', [BillController::class, 'index'])->name('bills.index');
+require __DIR__ . '/Bills/bill.php';

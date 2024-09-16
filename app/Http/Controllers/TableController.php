@@ -2,44 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Tables\CreateTable;
+use App\Actions\Tables\UpdateTable;
 use App\Http\Requests\StoreTableRequest;
 use App\Http\Requests\UpdateTableRequest;
-use App\Models\Order;
 use App\Models\Product;
 use App\Models\Table;
-use http\Header\Parser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class TableController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Factory|Application
     {
         return view('tables.index', ['tables' => Table::all()]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTableRequest $request): RedirectResponse
+    public function store(StoreTableRequest $request, CreateTable $createTable): RedirectResponse
     {
-        Table::create([
-            'name' => $request->name,
-        ]);
+        $createTable->handle($request);
 
         return redirect()->route('home');
     }
@@ -47,7 +36,7 @@ class TableController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Table $table , int $key): View|Factory|Application
+    public function show(Table $table, int $key): View|Factory|Application
     {
         $products = Product::all();
 
@@ -57,7 +46,7 @@ class TableController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Table $table)
+    public function edit(Table $table): Application|Factory|View
     {
         return view('tables.edit', ['table' => $table]);
     }
@@ -65,18 +54,12 @@ class TableController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTableRequest $request, Table $table): RedirectResponse
+    public function update(UpdateTableRequest $request, Table $table, UpdateTable $updateTable): RedirectResponse
     {
-        if (is_null($request->tableName))
-        {
-            $table->update([
-                'status' => $request->status,
-            ]);
+        if (is_null($request->tableName)) {
+            $updateTable->status($request, $table);
         } else {
-            $table->update([
-                'name' => $request->tableName,
-                'status' => $request->status,
-            ]);
+            $updateTable->update($request, $table);
         }
 
         return redirect()->back()->with('success', 'میز موردنظر ویرایش شد');
@@ -85,7 +68,7 @@ class TableController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Table $table)
+    public function destroy(Table $table): RedirectResponse
     {
         $table->delete();
 

@@ -2,55 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Products\CreateProduct;
+use App\Actions\Products\UpdateProduct;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Application|Factory|View
     {
         return view('products.index', ['products' => Product::all()]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request, CreateProduct $createProduct): RedirectResponse
     {
-        Product::create([
-            'name' => $request->product,
-            'price' => $request->price,
-            'description' => $request->description,
-        ]);
+        $createProduct->handle($request);
 
         return redirect()->back();
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(Product $product): Application|Factory|View
     {
         return view('products.edit', ['product' => $product]);
     }
@@ -58,13 +43,9 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product, UpdateProduct $updateProduct): RedirectResponse
     {
-        $product->update([
-            'name' => $request->product,
-            'price' => $request->price,
-            'status' => $request->status
-        ]);
+        $updateProduct->handle($request, $product);
 
         return redirect()->back()->with('success', 'محصول ویرایش شد');
     }
@@ -72,7 +53,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product): RedirectResponse
     {
         $product->delete();
 
